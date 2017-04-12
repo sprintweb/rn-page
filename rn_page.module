@@ -1,0 +1,80 @@
+<?php
+
+/*
+ * Implements hook_menu().
+ */
+function rn_page_menu() {
+  $items['drupal-test-task'] = array(
+    'page callback' => 'rn_page_drupal_test_task_page',
+    'access callback' => TRUE,
+  );
+  $items['drupal-test-task-form'] = array(
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('rn_page_drupal_test_task_form'),
+    'access callback' => TRUE,
+  );
+  return $items;
+}
+
+/*
+ * Returns a list of users from DB
+ */
+function rn_page_drupal_test_task_page() {
+  $users = db_select('users', 'u')
+    ->fields('u')
+    ->condition('u.uid', 0, '!=')
+    ->range(0, 50)
+    ->execute()
+    ->fetchAll();
+  foreach ($users as $user) {
+    $rows[] = array(
+      $user->uid,
+      $user->name,
+      l(t('edit'), 'user/' . $user->uid . '/edit'),
+    );
+  }
+  $header = array(t('Uid'), t('Username'), t('Edit'));
+  return theme('table', array('header' => $header, 'rows' => $rows));
+}
+
+/*
+ * Returns form with select lists - just for test!
+ */
+function rn_page_drupal_test_task_form($form, &$form_state) {
+  $form['#attached']['js'] = array(
+    'https://code.jquery.com/ui/1.12.0/jquery-ui.js' => array(
+      'type' => 'external',
+    ),
+    drupal_get_path('module', 'rn_page') . '/rn_page.js',
+  );
+  $form['#attached']['css'] = array(
+    'https://code.jquery.com/ui/1.12.0/themes/base/jquery-ui.css' => array(
+      'type' => 'external',
+    ),
+  );
+  $form['select1'] = array(
+    '#type' => 'select',
+    '#title' => t('Select 1'),
+    '#options' => array(
+      1 => t('Lorem ipsum 1'),
+      2 => t('Lorem ipsum 2'),
+    ),
+  );
+  $form['select2'] = array(
+    '#type' => 'select',
+    '#title' => t('Select 2'),
+    '#options' => array(
+      1 => t('Lorem ipsum 1'),
+      2 => t('Lorem ipsum 2'),
+    ),
+  );
+  $form['submit_button'] = array(
+    '#type' => 'submit',
+    '#value' => t('Submit'),
+  );
+  return $form;
+}
+
+function rn_page_drupal_test_task_form_submit($form, &$form_state) {
+  drupal_set_message('Thank you! ;)');
+}

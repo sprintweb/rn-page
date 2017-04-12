@@ -1,0 +1,5 @@
+name = RN page
+description = RN page module
+core = 7.x
+package = Other
+dependencies[] = jquery_update

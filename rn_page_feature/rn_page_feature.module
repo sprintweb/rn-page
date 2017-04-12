@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the RN Page Feature feature.
+ */
+
+include_once 'rn_page_feature.features.inc';
